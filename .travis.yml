@@ -19,5 +19,6 @@ script:
   - cd build
   - cmake ..
   - make -j tiramisu
+  - cmake --verbose -R 1
   - make test_10
   - ./test_10
