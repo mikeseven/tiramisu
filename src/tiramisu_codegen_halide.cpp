@@ -3719,8 +3719,8 @@ Halide::Expr generator::halide_expr_from_tiramisu_expr(const tiramisu::function 
             case tiramisu::o_tanh:
                 result = Halide::tanh(op0);
                 DEBUG(10, tiramisu::str_dump("op type: o_tanh"));
-            case tiramisu::o_asinh:
                 break;
+            case tiramisu::o_asinh:
                 result = Halide::asinh(op0);
                 DEBUG(10, tiramisu::str_dump("op type: o_asinh"));
                 break;
@@ -3819,8 +3819,10 @@ void function::gen_halide_obj(const std::string &obj_file_name, Halide::Target::
     //       Disable travis tests in .travis.yml if you switch to AVX2.
     std::vector<Halide::Target::Feature> features =
             {
-                    Halide::Target::AVX, Halide::Target::SSE41, Halide::Target::AVX2,
                     Halide::Target::SSE41,
+                    Halide::Target::AVX,
+                    Halide::Target::SSE41,
+                    Halide::Target::AVX2,
                     //Halide::Target::OpenCL,
                     Halide::Target::LargeBuffers
             };
