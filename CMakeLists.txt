@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.5)
+# 3.12 necessary on mac for using llvm with openmp
+cmake_minimum_required(VERSION 3.12)
 project(tiramisu)
 
 enable_testing()

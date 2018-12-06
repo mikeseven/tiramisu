@@ -28,43 +28,43 @@
 // Data size
 #if TIRAMISU_XLARGE
 
-#define N 4096
-#define M N
-#define K N
+const size_t N=4096;
+const size_t M=N;
+const size_t K=N;
 #define SIZE (65536*4096)
 
 #elif TIRAMISU_LARGE
 
 #if SIZE_IS_MULTIPLE_OF_TILE
-#define N 1024
-#define M 1024
-#define K 1024
+const size_t N=1024;
+const size_t M=1024;
+const size_t K=1024;
 #define SIZE (1024*1024)
 #else
-#define N 1060
-#define M 1060
-#define K 1060
+const size_t N=1060;
+const size_t M=1060;
+const size_t K=1060;
 #endif
 
 #elif TIRAMISU_MEDIUM
 
-#define N 512
-#define M 512
-#define K 512
+const size_t N=512;
+const size_t M=512;
+const size_t K=512;
 #define SIZE (1024)
 
 #elif TIRAMISU_SMALL
 
-#define N 128
-#define M 128
-#define K 128
+const size_t N=128;
+const size_t M=128;
+const size_t K=128;
 #define SIZE (128)
 
 #else
 
-#define N 1024
-#define M 1024
-#define K 1024
+const size_t N=1024;
+const size_t M=1024;
+const size_t K=1024;
 
 #endif
 

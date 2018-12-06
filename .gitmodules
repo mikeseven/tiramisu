@@ -6,10 +6,10 @@
 [submodule "3rdParty/llvm"]
 	path = 3rdParty/llvm
 	url = https://git.llvm.org/git/llvm.git/
-	branch = release_50
+	branch = release_60
 	ignore = all
 [submodule "3rdParty/clang"]
 	path = 3rdParty/clang
 	url = https://git.llvm.org/git/clang.git/
-	branch = release_50
+	branch = release_60
 	ignore = all

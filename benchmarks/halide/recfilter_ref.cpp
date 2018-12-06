@@ -18,8 +18,8 @@ int main(int argc, char* argv[]) {
     rec_filter(r.x, y, c) = cast<uint8_t>(a0*rec_filter(r.x, y, c) + a1*rec_filter(r.x-1, y, c) + a2*rec_filter(r.x-2, y, c));
     rec_filter(x, r.y, c) = cast<uint8_t>(a0*rec_filter(x, r.y, c) + a1*rec_filter(x, r.y-1, c) + a2*rec_filter(x, r.y-2, c));
 
-//    rec_filter.parallel(y).parallel(c).vectorize(x, 8);
-//    rec_filter.update(0).parallel(r.y).parallel(c);
+    rec_filter.parallel(y).parallel(c).vectorize(x, 8);
+    rec_filter.update(0).parallel(r.y).parallel(c);
 
     rec_filter.compile_to_object("build/generated_fct_recfilter_ref.o", {in}, "recfilter_ref");
 

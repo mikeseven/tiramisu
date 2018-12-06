@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USE_LIBJPEG=0
+USE_LIBJPEG=1
 
 if [ "$#" -eq 0 ]; then
 	echo "Usage: install_submodules.sh <TIRAMISU_ROOT_PATH>"
@@ -9,7 +9,7 @@ fi
 
 PROJECT_SRC_DIR=$1
 CMAKE=cmake
-CORES=1
+CORES=8
 # For Travis build we skip LLVM installation and use a custom binary.
 # Second argument specifies the custom path of the LLVM bin dir.
 if [ "$2" = "" ]; then
@@ -38,18 +38,18 @@ echo "#### Cloning submodules ####"
 echo_and_run_cmd "cd ${PROJECT_SRC_DIR}"
 echo_and_run_cmd "git submodule update --init --remote --recursive"
 
-
-# Get ISL installed
-echo "#### Installing isl ####"
-echo_and_run_cmd "cd ${PROJECT_SRC_DIR}/3rdParty/isl"
 if [ ! -d "build" ]; then
     echo_and_run_cmd "mkdir build/"
 fi
-echo_and_run_cmd "touch aclocal.m4 Makefile.am Makefile.in"
-echo_and_run_cmd "./configure --prefix=$PWD/build/ --with-int=imath"
-echo_and_run_cmd "make -j $CORES"
-echo_and_run_cmd "make install"
-echo "Done installing isl"
+
+# Get ISL installed
+# echo "#### Installing isl ####"
+# echo_and_run_cmd "cd ${PROJECT_SRC_DIR}/3rdParty/isl"
+# echo_and_run_cmd "touch aclocal.m4 Makefile.am Makefile.in"
+# echo_and_run_cmd "./configure --prefix=$PWD/build/ --with-int=imath"
+# echo_and_run_cmd "make -j $CORES"
+# echo_and_run_cmd "make install"
+# echo "Done installing isl"
 
 
 
@@ -65,7 +65,7 @@ if [ "$2" = "" ]; then
         echo_and_run_cmd "mkdir prefix/"
     fi
     echo_and_run_cmd "cd build"
-    echo_and_run_cmd "$CMAKE -DLLVM_ENABLE_TERMINFO=OFF -DLLVM_TARGETS_TO_BUILD='X86;ARM;AArch64;Mips;NVPTX;PowerPC' -DLLVM_ENABLE_ASSERTIONS=ON -DCMAKE_BUILD_TYPE=Release .. -DCMAKE_INSTALL_PREFIX=$PWD/../prefix/ -DLLVM_EXTERNAL_CLANG_SOURCE_DIR=${PROJECT_SRC_DIR}/3rdParty/clang"
+    echo_and_run_cmd "$CMAKE -DLLVM_ENABLE_TERMINFO=OFF -DLLVM_TARGETS_TO_BUILD='AMDGPU;X86;NVPTX' -DLLVM_ENABLE_ASSERTIONS=ON -DCMAKE_BUILD_TYPE=Release .. -DCMAKE_INSTALL_PREFIX=$PWD/../prefix/ -DLLVM_EXTERNAL_CLANG_SOURCE_DIR=${PROJECT_SRC_DIR}/3rdParty/clang"
     echo_and_run_cmd "make -j $CORES"
     echo_and_run_cmd "make install"
 else
@@ -81,18 +81,16 @@ export LLVM_CONFIG=${LLVM_BIN_DIR}/llvm-config
 
 
 # Get halide installed
-echo "#### Installing Halide ####"
-echo_and_run_cmd "cd ${PROJECT_SRC_DIR}/3rdParty/Halide"
-echo_and_run_cmd "git checkout tiramisu_64_bit"
-echo_and_run_cmd "git pull"
-if [ "${USE_LIBJPEG}" = "0" ]; then
-    echo_and_run_cmd "make CXXFLAGS=\"-DHALIDE_NO_JPEG\" -j $CORES"
-else
-    echo_and_run_cmd "make clean"
-    echo_and_run_cmd "make -j $CORES"
-fi
-
-
+# echo "#### Installing Halide ####"
+# echo_and_run_cmd "cd ${PROJECT_SRC_DIR}/3rdParty/Halide"
+# echo_and_run_cmd "git checkout tiramisu_64_bit"
+# echo_and_run_cmd "git pull"
+# if [ "${USE_LIBJPEG}" = "0" ]; then
+#     echo_and_run_cmd "make CXXFLAGS=\"-DHALIDE_NO_JPEG\" -j $CORES"
+# else
+#     echo_and_run_cmd "make clean"
+#     echo_and_run_cmd "make -j $CORES"
+# fi
+# echo "Done installing Halide"
 
 cd ${PROJECT_SRC_DIR}
-echo "Done installing Halide"

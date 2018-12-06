@@ -1,4 +1,4 @@
-set(CMAKE_BUILD_TYPE DEBUG)
+set(CMAKE_BUILD_TYPE RELEASE)
 
 # Set to TRUE if you wish to use GPU
 set(USE_GPU FALSE)
@@ -7,10 +7,10 @@ set(USE_GPU FALSE)
 set(USE_MPI FALSE)
 
 # Set to TRUE if you wish to use libpng which is needed only by the Halide benchmarks
-set(USE_LIBPNG FALSE)
+set(USE_LIBPNG TRUE)
 
 # Set to TRUE if you wish to use libjpeg which is needed only by the Halide benchmarks
-set(USE_LIBJPEG FALSE)
+set(USE_LIBJPEG TRUE)
 
 # If USE_MPI is true, you need to the MPI_BUILD_DIR and MPI_NODES path
 # Note: This assumes you are using your own installed version of MPI. If your system already
@@ -32,10 +32,14 @@ set(MKL_PREFIX "")
 set(LLVM_CONFIG_BIN "${CMAKE_SOURCE_DIR}/3rdParty/llvm/prefix/bin/")
 
 # ISL paths
-set(ISL_INCLUDE_DIRECTORY "3rdParty/isl/build/include/")
-set(ISL_LIB_DIRECTORY "3rdParty/isl/build/lib/")
+# set(ISL_INCLUDE_DIRECTORY "3rdParty/isl/build/include/")
+# set(ISL_LIB_DIRECTORY "3rdParty/isl/build/lib/")
+set(ISL_INCLUDE_DIRECTORY "/Users/mikael/code/isl/build/include/")
+set(ISL_LIB_DIRECTORY "/Users/mikael/code/isl/build/lib/")
 
 # Halide Paths
-set(HALIDE_SOURCE_DIRECTORY "3rdParty/Halide")
-set(HALIDE_LIB_DIRECTORY "3rdParty/Halide/lib")
+# set(HALIDE_SOURCE_DIRECTORY "3rdParty/Halide")
+# set(HALIDE_LIB_DIRECTORY "3rdParty/Halide/lib")
+set(HALIDE_SOURCE_DIRECTORY "/Users/mikael/local/Halide/")
+set(HALIDE_LIB_DIRECTORY "/Users/mikael/local/Halide/bin/")
 

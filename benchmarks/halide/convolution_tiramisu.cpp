@@ -14,8 +14,8 @@ int main(int argc, char **argv)
     constant SIZE1("SIZE1", in_image.extent(1));
     constant SIZE2("SIZE2", in_image.extent(2));
 
-    int kernel_extent_1 = 3;
-    int kernel_extent_0 = 3;
+    const int kernel_extent_1 = 3;
+    const int kernel_extent_0 = 3;
     var i2("i2", 0, SIZE2), i1("i1", 0, SIZE1), i0("i0", 0, SIZE0);
     var k0("k0", 0, kernel_extent_0), k1("k1", 0, kernel_extent_1);
     var c("c", 0, SIZE2), y("y", 0, SIZE1-8), x("x", 0, SIZE0-8);
@@ -23,15 +23,16 @@ int main(int argc, char **argv)
     input     in("in", {i2, i1, i0}, p_uint8);
     input kernel("kernel", {k1, k0}, p_float32);
 
-    computation conv("conv", {c, y, x}, cast(p_uint8, (cast(p_float32, cast(p_float32, in(c, y,     x    ))*kernel(0, 0)) +
-						       cast(p_float32, cast(p_float32, in(c, y,     x + 1))*kernel(0, 1)) +
-						       cast(p_float32, cast(p_float32, in(c, y,     x + 2))*kernel(0, 2)) +
-						       cast(p_float32, cast(p_float32, in(c, y + 1, x    ))*kernel(1, 0)) +
-						       cast(p_float32, cast(p_float32, in(c, y + 1, x + 1))*kernel(1, 1)) +
-						       cast(p_float32, cast(p_float32, in(c, y + 1, x + 2))*kernel(1, 2)) +
-						       cast(p_float32, cast(p_float32, in(c, y + 2, x    ))*kernel(2, 0)) +
-						       cast(p_float32, cast(p_float32, in(c, y + 2, x + 1))*kernel(2, 1)) +
-						       cast(p_float32, cast(p_float32, in(c, y + 2, x + 2))*kernel(2, 2))
+    computation conv("conv", {c, y, x}, cast(p_uint8, (
+                                cast(p_float32, in(c, y,     x    ))*kernel(0, 0) +
+                                cast(p_float32, in(c, y,     x + 1))*kernel(0, 1) +
+                                cast(p_float32, in(c, y,     x + 2))*kernel(0, 2) +
+                                cast(p_float32, in(c, y + 1, x    ))*kernel(1, 0) +
+                                cast(p_float32, in(c, y + 1, x + 1))*kernel(1, 1) +
+                                cast(p_float32, in(c, y + 1, x + 2))*kernel(1, 2) +
+                                cast(p_float32, in(c, y + 2, x    ))*kernel(2, 0) +
+                                cast(p_float32, in(c, y + 2, x + 1))*kernel(2, 1) +
+                                cast(p_float32, in(c, y + 2, x + 2))*kernel(2, 2)
 						       )));
 
     // Add schedules.

@@ -24,25 +24,27 @@ int main(int, char**)
 
     // Warm up
     convolution_tiramisu(input.raw_buffer(), kernel.raw_buffer(), output1.raw_buffer());
-    convolution_ref(input.raw_buffer(), kernel.raw_buffer(), output2.raw_buffer());
 
     // Tiramisu
     for (int i=0; i<NB_TESTS; i++)
     {
         auto start1 = std::chrono::high_resolution_clock::now();
         convolution_tiramisu(input.raw_buffer(), kernel.raw_buffer(),
-			output1.raw_buffer());
+        output1.raw_buffer());
         auto end1 = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double,std::milli> duration1 = end1 - start1;
         duration_vector_1.push_back(duration1);
     }
 
+    // Warm up
+    convolution_ref(input.raw_buffer(), kernel.raw_buffer(), output2.raw_buffer());
+    
     // Reference
     for (int i=0; i<NB_TESTS; i++)
     {
         auto start2 = std::chrono::high_resolution_clock::now();
         convolution_ref(input.raw_buffer(), kernel.raw_buffer(),
-			output2.raw_buffer());
+        output2.raw_buffer());
         auto end2 = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double,std::milli> duration2 = end2 - start2;
         duration_vector_2.push_back(duration2);
