@@ -280,7 +280,7 @@ private:
      */
     std::vector<std::string> iterator_names;
 
-    std::unordered_map<std::string, std::list<cuda_ast::kernel_ptr>> iterator_to_kernel_list;
+    std::unordered_map<isl_ast_node*, std::list<cuda_ast::kernel_ptr>> iterator_to_kernel_list;
 
     std::shared_ptr<cuda_ast::compiler> nvcc_compiler;
 
@@ -3541,6 +3541,45 @@ public:
     void shift(tiramisu::var L0, int n);
 
     /**
+      * Apply loop skewing on the loop levels \p i and \p j.  The names of the new loop levels is \p ni and \p nj.
+      *
+      * This command transforms the loop (i, j) into the loop (i, i+j).
+      * For example if you have the following loop
+      *
+      * \code
+      for (int i = 1; i < N; i++)
+        for (int j = 1; j < M; j++)
+          a[i][j] = a[i - 1][j] + a[i][j - 1];
+       \endcode
+
+      * and apply
+
+      \code
+	a.skew(i, j, ni, nj)
+      \endcode
+
+      * you would get
+      *
+      \code
+      for (int i = 1; i < N; i++)
+        for (int j = i+1; j < i+M; j++)
+          a[i][j - i] = a[i - 1][j - i] + a[i][j - i - 1];
+      \endcode
+
+      */
+    void skew(tiramisu::var i, tiramisu::var j, tiramisu::var ni, tiramisu::var nj);
+
+    /**
+      * \overload
+      */
+    void skew(tiramisu::var i, tiramisu::var j);
+
+    /**
+      * \overload
+      */
+    void skew(int i, int j);
+
+    /**
       * Split the loop level \p L0 of the iteration space into two
       * new loop levels.
       *
@@ -4303,7 +4342,7 @@ protected:
                                                             int level,
                                                             std::vector<std::pair<std::string, std::string>> &tagged_stmts,
                                                             bool is_a_child_block,
-                                                            std::unordered_map<std::string, std::list<cuda_ast::kernel_ptr>> &iterator_to_kernel_map);
+                                                            std::unordered_map<isl_ast_node*, std::list<cuda_ast::kernel_ptr>> &iterator_to_kernel_map);
 
     // TODO doc
     static Halide::Internal::Stmt make_halide_block(const Halide::Internal::Stmt &first,

@@ -251,6 +251,12 @@ bool access_has_id(const tiramisu::expr &exp)
             case tiramisu::o_asin:
             case tiramisu::o_acos:
             case tiramisu::o_atan:
+            case tiramisu::o_sinh:
+            case tiramisu::o_cosh:
+            case tiramisu::o_tanh:
+            case tiramisu::o_asinh:
+            case tiramisu::o_acosh:
+            case tiramisu::o_atanh:
             case tiramisu::o_abs:
             case tiramisu::o_sqrt:
             case tiramisu::o_expo:
@@ -339,15 +345,21 @@ bool access_is_affine(const tiramisu::expr &exp)
             case tiramisu::o_max:
             case tiramisu::o_min:
             case tiramisu::o_floor:
-            case tiramisu::o_sin:
-            case tiramisu::o_cos:
             case tiramisu::o_select:
             case tiramisu::o_lerp:
             case tiramisu::o_cond:
+            case tiramisu::o_sin:
+            case tiramisu::o_cos:
             case tiramisu::o_tan:
             case tiramisu::o_asin:
             case tiramisu::o_acos:
             case tiramisu::o_atan:
+            case tiramisu::o_sinh:
+            case tiramisu::o_cosh:
+            case tiramisu::o_tanh:
+            case tiramisu::o_asinh:
+            case tiramisu::o_acosh:
+            case tiramisu::o_atanh:
             case tiramisu::o_abs:
             case tiramisu::o_sqrt:
             case tiramisu::o_expo:
@@ -703,6 +715,12 @@ void generator::traverse_expr_and_extract_accesses(const tiramisu::function *fct
             case tiramisu::o_asin:
             case tiramisu::o_acos:
             case tiramisu::o_atan:
+            case tiramisu::o_sinh:
+            case tiramisu::o_cosh:
+            case tiramisu::o_tanh:
+            case tiramisu::o_asinh:
+            case tiramisu::o_acosh:
+            case tiramisu::o_atanh:
             case tiramisu::o_abs:
             case tiramisu::o_sqrt:
             case tiramisu::o_expo:
@@ -844,6 +862,12 @@ tiramisu::expr traverse_expr_and_replace_non_affine_accesses(tiramisu::computati
             case tiramisu::o_asin:
             case tiramisu::o_acos:
             case tiramisu::o_atan:
+            case tiramisu::o_sinh:
+            case tiramisu::o_cosh:
+            case tiramisu::o_tanh:
+            case tiramisu::o_asinh:
+            case tiramisu::o_acosh:
+            case tiramisu::o_atanh:
             case tiramisu::o_abs:
             case tiramisu::o_sqrt:
             case tiramisu::o_expo:
@@ -1136,6 +1160,12 @@ tiramisu::expr replace_original_indices_with_transformed_indices(tiramisu::expr 
             case tiramisu::o_asin:
             case tiramisu::o_acos:
             case tiramisu::o_atan:
+            case tiramisu::o_sinh:
+            case tiramisu::o_cosh:
+            case tiramisu::o_tanh:
+            case tiramisu::o_asinh:
+            case tiramisu::o_acosh:
+            case tiramisu::o_atanh:
             case tiramisu::o_abs:
             case tiramisu::o_sqrt:
             case tiramisu::o_expo:
@@ -1580,7 +1610,7 @@ Halide::Internal::Stmt
 tiramisu::generator::halide_stmt_from_isl_node(const tiramisu::function &fct, isl_ast_node *node, int level,
                                                std::vector<std::pair<std::string, std::string>> &tagged_stmts,
                                                bool is_a_child_block,
-                                               std::unordered_map<std::string, std::list<cuda_ast::kernel_ptr>> &iterator_to_kernel_map)
+                                               std::unordered_map<isl_ast_node*, std::list<cuda_ast::kernel_ptr>> &iterator_to_kernel_map)
 {
     assert(node != NULL);
     assert(level >= 0);
@@ -1849,7 +1879,7 @@ tiramisu::generator::halide_stmt_from_isl_node(const tiramisu::function &fct, is
         char *cstr = isl_ast_expr_to_C_str(iter);
         std::string iterator_str = std::string(cstr);
 
-        auto it_kernel = iterator_to_kernel_map.find(iterator_str);
+        auto it_kernel = iterator_to_kernel_map.find(node);
 
         if (it_kernel != iterator_to_kernel_map.end())
         {
@@ -3678,6 +3708,30 @@ Halide::Expr generator::halide_expr_from_tiramisu_expr(const tiramisu::function 
                 result = Halide::atan(op0);
                 DEBUG(10, tiramisu::str_dump("op type: o_atan"));
                 break;
+            case tiramisu::o_sinh:
+                result = Halide::sinh(op0);
+                DEBUG(10, tiramisu::str_dump("op type: o_sinh"));
+                break;
+            case tiramisu::o_cosh:
+                result = Halide::cosh(op0);
+                DEBUG(10, tiramisu::str_dump("op type: o_cosh"));
+                break;
+            case tiramisu::o_tanh:
+                result = Halide::tanh(op0);
+                DEBUG(10, tiramisu::str_dump("op type: o_tanh"));
+            case tiramisu::o_asinh:
+                break;
+                result = Halide::asinh(op0);
+                DEBUG(10, tiramisu::str_dump("op type: o_asinh"));
+                break;
+            case tiramisu::o_acosh:
+                result = Halide::acosh(op0);
+                DEBUG(10, tiramisu::str_dump("op type: o_acosh"));
+                break;
+            case tiramisu::o_atanh:
+                result = Halide::atanh(op0);
+                DEBUG(10, tiramisu::str_dump("op type: o_atanh"));
+                break;
             case tiramisu::o_abs:
                 result = Halide::abs(op0);
                 DEBUG(10, tiramisu::str_dump("op type: o_abs"));
@@ -3766,6 +3820,7 @@ void function::gen_halide_obj(const std::string &obj_file_name, Halide::Target::
     std::vector<Halide::Target::Feature> features =
             {
                     Halide::Target::AVX, Halide::Target::SSE41, Halide::Target::AVX2,
+                    Halide::Target::SSE41,
                     //Halide::Target::OpenCL,
                     Halide::Target::LargeBuffers
             };
@@ -3838,6 +3893,12 @@ void tiramisu::generator::_update_producer_expr_name(tiramisu::expr &current_exp
             case tiramisu::o_asin:
             case tiramisu::o_acos:
             case tiramisu::o_atan:
+            case tiramisu::o_sinh:
+            case tiramisu::o_cosh:
+            case tiramisu::o_tanh:
+            case tiramisu::o_asinh:
+            case tiramisu::o_acosh:
+            case tiramisu::o_atanh:
             case tiramisu::o_abs:
             case tiramisu::o_sqrt:
             case tiramisu::o_expo:
