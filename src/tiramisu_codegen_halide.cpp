@@ -2323,8 +2323,6 @@ void function::gen_halide_stmt()
 
     DEBUG(3, this->gen_c_code());
 
-    // Halide::Internal::set_always_upcast();
-
     // This vector is used in generate_Halide_stmt_from_isl_node to figure
     // out what are the statements that have already been visited in the
     // AST tree.
@@ -2433,7 +2431,8 @@ Halide::Internal::Stmt generator::make_buffer_alloc(buffer *b, const std::vector
     {
         return Halide::Internal::Allocate::make(
                 b->get_name(),
-                h_type,Halide::MemoryType::Auto,
+                h_type,
+                Halide::MemoryType::Auto,
                 extents, Halide::Internal::const_true(), stmt);
     }
     else if (b->location == memory_location::global)
@@ -2848,7 +2847,7 @@ void computation::create_halide_assignment()
                                                                                            this->get_iterators_map());
         }
         // The majority of code generation for computations will fall into this first if statement as they are not library calls. This is the original code
-        // Some library calls take the usual lhs as an actual argument however, so we may need to compute it anyway for some library calls
+        // Some library calls take the usual lhs as an actual argument however, so we may need to compute it anyway for some library calls 
         if (!this->is_library_call() || this->lhs_argument_idx != -1) { // This has an LHS to compute.
             const char *buffer_name =
                     isl_space_get_tuple_name(
@@ -3001,7 +3000,7 @@ void computation::create_halide_assignment()
                     }
                 }
                 if (this->lhs_argument_idx != -1) {
-                    // The LHS is a parameter of the library call. We need to take the address of buffer at lhs_index as we assume that all
+                    // The LHS is a parameter of the library call. We need to take the address of buffer at lhs_index as we assume that all 
                     // library calls requiring the LHS buffer also take the index into that buffer as either a separate argument (o_lin_index)
                     // or as an address_of into the buffer
                     Halide::Expr result;
@@ -3018,12 +3017,12 @@ void computation::create_halide_assignment()
                                                               Halide::Internal::Call::Extern);
                     }
                     halide_call_args[lhs_argument_idx] = result;
-                } // else we don't care about the LHS
+                } // else we don't care about the LHS 
                 if (this->rhs_argument_idx != -1) { // THis library call also requires a RHS buffer and index, so process that
                     if (this->get_expr().get_op_type() == tiramisu::o_buffer) {
                       // TODO(Jess): Can we remove this assumption?? It will probably require adding yet another special index type (such as rhs_argument_index_index)
                         // In this case, we make a (correct for now) assumption that the last call arg gets the linear index and the rhs_argument_idx gets the buffer
-                        expr old = this->get_expr();
+                        expr old = this->get_expr(); 
                         expr mod_rhs(tiramisu::o_address,
                                      this->get_expr().get_name());
                         this->expression = mod_rhs;
@@ -3819,11 +3818,10 @@ void function::gen_halide_obj(const std::string &obj_file_name, Halide::Target::
     //       Disable travis tests in .travis.yml if you switch to AVX2.
     std::vector<Halide::Target::Feature> features =
             {
-                    Halide::Target::SSE41,
                     Halide::Target::AVX,
                     Halide::Target::SSE41,
                     Halide::Target::AVX2,
-                    //Halide::Target::OpenCL,
+                    // Halide::Target::OpenCL,
                     Halide::Target::LargeBuffers
             };
 
